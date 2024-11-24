@@ -6,7 +6,8 @@ app.use(express.json());
 
 app.use(cors());
 
-const mainRouter = require("./routes/trivia");
+const triviaRouter = require("./routes/trivia");
+const triviaUserRouter = require("./routes/trivia_user");
 const userRouter = require("./routes/users");
 
 app.listen(3006, () => {
@@ -15,4 +16,6 @@ app.listen(3006, () => {
 
 app.use("/users", userRouter);
 
-app.use("/", mainRouter);
+app.use("/", triviaRouter);
+
+app.use("/trivia_user", triviaUserRouter);

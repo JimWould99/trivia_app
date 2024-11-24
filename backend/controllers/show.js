@@ -7,7 +7,7 @@ const {
   QuestionDifficulties,
 } = require("open-trivia-db");
 
-exports.display_quizzes = async (req, res) => {
+exports.display_user_quizzes = async (req, res) => {
   const { id } = req.user;
 
   const quizzes = await prisma.quiz.findMany({
@@ -20,9 +20,15 @@ exports.display_quizzes = async (req, res) => {
   res.json({ quizzes });
 };
 
-exports.display_questions = async (req, res) => {
-  const { id } = req.user;
+exports.display_all_quizzes = async (req, res) => {
+  const quizzes = await prisma.quiz.findMany({
+    orderBy: { createdAt: "asc" },
+  });
 
+  res.json({ quizzes });
+};
+
+exports.display_questions = async (req, res) => {
   const questions = await prisma.question.findMany({
     where: {
       quizId: req.body.quizId,
@@ -34,12 +40,11 @@ exports.display_questions = async (req, res) => {
 };
 
 exports.questions_api = async (req, res) => {
-  const questions = await getQuestions({
-    amount: 10,
-    // category: CategoryNames.Animals,
+  const general = await getQuestions({
+    amount: 30,
+    category: CategoryNames["General Knowledge"],
     difficulty: QuestionDifficulties.Medium,
     type: "multiple",
   });
-
-  res.json({ questions });
+  res.json({ general });
 };

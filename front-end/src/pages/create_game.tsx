@@ -8,7 +8,7 @@ const Create_game = () => {
   const queryParams = new URLSearchParams(location.search);
   const quizId = queryParams.get("quizId");
 
-  const { socket, setSocket } = useContext(SocketContext);
+  const { socket } = useContext(SocketContext);
 
   const [displayMessage, setDisplayMessage] = useState<string>("");
 
@@ -20,32 +20,30 @@ const Create_game = () => {
   const [room, setRoom] = useState<number>();
 
   useEffect(() => {
-    const newSocket = io(import.meta.env.VITE_REACT_APP_URL);
-
-    setSocket(newSocket);
-
-    newSocket.on("connect", (message) => {
+    /*socket.on("connect", (message) => {
       setConnectionId(newSocket.id);
-    });
+    });*/
 
     // recieve message from server
-    newSocket.on("confirm-create-room", (sentValue) => {
-      console.log("received");
-      setDisplayMessage(sentValue);
-    });
-
-    newSocket.on("join-confirmation", (objects) => {
-      const playersArray = [];
-      objects.forEach((player) => {
-        playersArray.push(player.name);
+    if (socket) {
+      socket.on("confirm-create-room", (sentValue) => {
+        console.log("received");
+        setDisplayMessage(sentValue);
       });
-      setPlayers(playersArray);
-    });
+
+      socket.on("join-confirmation", (objects) => {
+        const playersArray = [];
+        objects.forEach((player) => {
+          playersArray.push(player.name);
+        });
+        setPlayers(playersArray);
+      });
+    }
 
     /*return () => {
       newSocket.disconnect();
-    }; */
-  }, []);
+    };*/
+  }, [socket]);
 
   const createRoom = () => {
     const getRoomNumb = () => {

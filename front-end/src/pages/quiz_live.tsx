@@ -14,7 +14,7 @@ const Quiz_live = () => {
 
   const [decision, setDecision] = useState<string>("deciding");
 
-  const [feedback, setFeedback] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<Array | null>(null);
 
   console.log("socket", socket);
   useEffect(() => {
@@ -39,19 +39,21 @@ const Quiz_live = () => {
       }
     };
     fetchQuestions();
+
+    socket.on("question", (question) => {
+      setDecision("deciding");
+      setCurrentQuestion(question);
+    });
+
+    socket.on("feedback", (feedback) => {
+      setFeedback(feedback);
+      console.log(JSON.stringify("feedback", feedback));
+      setDecision("correct");
+    });
   }, []);
 
-  socket.on("question", (question) => {
-    setDecision("deciding");
-    setCurrentQuestion(question);
-  });
-
-  socket.on("feedback", (feedback) => {
-    setFeedback(true);
-    setDecision(feedback);
-  });
-
   const checkAnswer = (selectedAnswer: number, time: number) => {
+    console.log("check answer function");
     let answer;
     if (selectedAnswer === currentQuestion.correctAnswer) {
       answer = true;
@@ -73,6 +75,7 @@ const Quiz_live = () => {
           question={currentQuestion}
           checkAnswer={checkAnswer}
           decision={decision}
+          key={currentQuestion.id}
         ></Quiz_Question>
       )}
     </>

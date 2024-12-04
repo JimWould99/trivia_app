@@ -17,38 +17,33 @@ const Enter_room = () => {
   const [username, setUsername] = useState<string>("");
 
   useEffect(() => {
-    const newSocket = io(import.meta.env.VITE_REACT_APP_URL);
-
-    setSocket(newSocket);
-
-    newSocket.on("connect", (message) => {
-      setConnectionId(newSocket.id);
-    });
     // newSocket.emit("join-room", newRoom);
 
     // recieve message from server
-    newSocket.on("join-confirmation-joiner", (sentValue) => {
-      console.log(`sent value: ${sentValue}`);
-      setRoomDisplay(sentValue);
-    });
-
-    newSocket.on("join-confirmation", (objects) => {
-      const playersArray = [];
-      objects.forEach((player) => {
-        playersArray.push(player.name);
+    if (socket) {
+      socket.on("join-confirmation-joiner", (sentValue) => {
+        console.log(`sent value: ${sentValue}`);
+        setRoomDisplay(sentValue);
       });
-      setPlayers(playersArray);
-    });
 
-    newSocket.on("question", (question) => {
-      console.log("received question");
-      navigate("quiz_client", { state: { question } });
-    });
+      socket.on("join-confirmation", (objects) => {
+        const playersArray = [];
+        objects.forEach((player) => {
+          playersArray.push(player.name);
+        });
+        setPlayers(playersArray);
+      });
 
-    /*return () => {
+      socket.on("question", (question) => {
+        console.log("received question");
+        navigate("/quiz_client", { state: { question } });
+      });
+    }
+
+    /* return () => {
       newSocket.disconnect();
     };*/
-  }, []);
+  }, [socket]);
 
   const enterRoom = () => {
     socket.emit("join-room", room, username);

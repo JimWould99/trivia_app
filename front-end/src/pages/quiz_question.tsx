@@ -107,7 +107,7 @@ logic- a timer
   );
 };
 
-const Quiz_Question = ({ question, checkAnswer, decision }) => {
+export const Quiz_Question = ({ question, checkAnswer, decision }) => {
   const [time, setTime] = useState<number>(30);
 
   const [OneStyling, setOneStyling] = useState<string>(

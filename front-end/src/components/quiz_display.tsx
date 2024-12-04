@@ -48,7 +48,7 @@ const Quiz_display: React.FC<QuizDisplayProps> = ({ quiz }) => {
                   boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
                 }}
               >
-                <Link to={`/quiz_live/?quizId=${quiz.id}`}>
+                <Link to={`/create_game/?quizId=${quiz.id}`}>
                   <p>Host Live</p>
                 </Link>
               </button>

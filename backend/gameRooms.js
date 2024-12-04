@@ -21,7 +21,7 @@ module.exports = (io, socket) => {
 
   socket.on("game_connection", (questions, room) => {
     //console.log("questions", questions);
-    console.log("game conncetion");
+    console.log("game connection");
     quizQuestions[room] = questions;
     questionIndex[room] = 0;
     let roomValues = {};
@@ -32,20 +32,25 @@ module.exports = (io, socket) => {
     io.to(room).emit("question", quizQuestions[room][questionIndex[room]]);
 
     socket.on("check-answer", (object) => {
+      console.log("before", answers);
       answers[room][questionIndex[room]].push(object);
+      console.log("after", answers);
       let answersArray = answers[room][questionIndex[room]];
 
-      if (answersArray.length !== roomIds[room].length) {
+      if (answersArray.length !== roomIds[room].length * 2) {
+        console.log("not all responses received");
         return;
       }
-      io.to(room).emit("feedback", "correct");
+      console.log("all received");
+      console.log("feedback", answers[room][questionIndex[room]]);
+      io.to(room).emit("feedback", answers[room][questionIndex[room]]);
       setTimeout(() => {
         questionIndex[room] += 1;
         io.to(room).emit("question", quizQuestions[room][questionIndex[room]]);
       }, 2 * 1000);
       //console.log("answers", answers[room][questionIndex[room]]);
       // answers[room].questionIndex[room].push(object);
-      console.log("answers updated", answers);
+      //  console.log("answers updated", answers);
     });
   });
 

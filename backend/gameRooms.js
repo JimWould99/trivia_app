@@ -22,9 +22,6 @@ module.exports = (io, socket) => {
   socket.on("game_connection", (questions, room) => {
     //console.log("questions", questions);
     console.log("game conncetion");
-    io.sockets.sockets.forEach((socket) => {
-      socket.disconnect(true);
-    });
     quizQuestions[room] = questions;
     questionIndex[room] = 0;
     let roomValues = {};

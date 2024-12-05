@@ -35,9 +35,11 @@ const Enter_room = () => {
         setPlayers(playersArray);
       });
 
-      socket.on("question", (question) => {
+      socket.on("join_game", (question) => {
         console.log("room enter page", room);
-        navigate("/quiz_client", { state: { question, username, room } });
+        navigate("/quiz_live", {
+          state: { question, username, room, user: "client" },
+        });
       });
     }
 

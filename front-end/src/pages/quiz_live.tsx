@@ -5,12 +5,12 @@ import { SocketContext } from "../context/socket";
 
 const Quiz_live = () => {
   const location = useLocation();
-  const { quizId, room, username } = location.state;
+  const { quizId, room, username, user } = location.state;
   const { socket, setSocket } = useContext(SocketContext);
 
   const [questions, setQuestions] = useState<Array>();
 
-  const [currentQuestion, setCurrentQuestion] = useState<object>();
+  const [questionIndex, setQuestionIndex] = useState<number>(0);
 
   const [decision, setDecision] = useState<string>("deciding");
 
@@ -18,8 +18,10 @@ const Quiz_live = () => {
 
   const [selected, setSelected] = useState<number | null>(null);
 
-  console.log("socket", socket);
   useEffect(() => {
+    if (user === "client") {
+      return;
+    }
     const fetchQuestions = async () => {
       const options = {
         method: "POST",
@@ -36,22 +38,39 @@ const Quiz_live = () => {
       console.log("questions", json.questions);
       // console.log(quiz.name, ":", json.questions, "quiz id", quiz.id);
       if (response.ok) {
-        setQuestions(json.questions);
-        socket.emit("game_connection", json.questions, room, "host");
+        socket.emit("game_connection", json.questions, room);
       }
     };
     fetchQuestions();
+  }, []);
 
-    socket.on("question", (question) => {
-      setDecision("deciding");
-      setCurrentQuestion(question);
+  useEffect(() => {
+    socket.on("setQuestions", (questions) => {
+      setQuestions(questions);
     });
 
-    socket.on("feedback", (feedback) => {
-      setSelected(null);
-      console.log("feedback", feedback);
-      setFeedback(feedback);
-      setDecision("correct");
+    socket.on("increase_index", (question) => {
+      console.log("received new");
+      setQuestionIndex((prev) => prev + 1);
+      setFeedback(null);
+    });
+
+    socket.on("feedback", (recieved_feedback) => {
+      console.log("feedback", recieved_feedback);
+      recieved_feedback.forEach((user) => {
+        if (user.username === username) {
+          if (user.correct) {
+            setDecision("correct");
+          } else {
+            setDecision("incorrect");
+          }
+        }
+      });
+      setTimeout(() => {
+        setFeedback(recieved_feedback);
+        setSelected(null);
+        setDecision("deciding");
+      }, 2 * 1000);
     });
   }, []);
 
@@ -59,7 +78,7 @@ const Quiz_live = () => {
     console.log("check answer function");
     setSelected(selectedAnswer);
     let answer;
-    if (selectedAnswer === currentQuestion.correctAnswer) {
+    if (selectedAnswer === questions[questionIndex].correctAnswer) {
       answer = true;
     } else {
       answer = false;
@@ -78,20 +97,28 @@ const Quiz_live = () => {
   return (
     <>
       <p>quiz live</p>
-      {currentQuestion && (
+      {questions && questions[questionIndex] && (
         <Quiz_Question
-          question={currentQuestion}
+          question={questions[questionIndex]}
           checkAnswer={checkAnswer}
           decision={decision}
-          key={currentQuestion.id}
+          key={questions[questionIndex].id}
           selected={selected}
+          feedback={feedback}
         ></Quiz_Question>
       )}
+      {!questions && <p>Loading..</p>}
     </>
   );
 };
 
-const Quiz_Question = ({ question, checkAnswer, decision, selected }) => {
+const Quiz_Question = ({
+  question,
+  checkAnswer,
+  decision,
+  selected,
+  feedback,
+}) => {
   const [time, setTime] = useState<number>(30);
 
   const [OneStyling, setOneStyling] = useState<string>(
@@ -167,15 +194,15 @@ const Quiz_Question = ({ question, checkAnswer, decision, selected }) => {
       );
     } else if (selected === 2) {
       setTwoStyling(
-        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+        `border-2 border-white bg-yellow-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
       );
     } else if (selected === 3) {
       setThreeStyling(
-        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+        `border-2 border-white bg-blue-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
       );
     } else if (selected === 4) {
       setFourStyling(
-        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+        `border-2 border-white bg-red-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
       );
     }
   }, [selected]);
@@ -202,6 +229,7 @@ const Quiz_Question = ({ question, checkAnswer, decision, selected }) => {
               Correct
             </p>
           )}
+          {decision === "deciding" && feedback && JSON.stringify(feedback)}
           <div className="flex flex-col items-center justify-center">
             <button
               className=" text-md text-black font-bold bg-green-400 rounded p-3 hover:bg-white hover:text-black"

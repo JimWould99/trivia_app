@@ -90,7 +90,7 @@ const Create_game = () => {
       </p>
       <Link
         to="/quiz_live"
-        state={{ quizId: quizId, room: room, username: username }}
+        state={{ quizId: quizId, room: room, username: username, user: "host" }}
       >
         <button className="border-2 border-black">Start Game</button>
       </Link>

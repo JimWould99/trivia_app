@@ -18,6 +18,8 @@ const Quiz_live = () => {
 
   const [selected, setSelected] = useState<number | null>(null);
 
+  const [ranking, setRanking] = useState<object | null>(null);
+
   useEffect(() => {
     if (user === "client") {
       return;
@@ -45,7 +47,7 @@ const Quiz_live = () => {
   }, []);
 
   useEffect(() => {
-    socket.on("setQuestions", (questions) => {
+    socket.on("setQuestions", (questions: Array) => {
       setQuestions(questions);
     });
 
@@ -55,7 +57,56 @@ const Quiz_live = () => {
       setFeedback(null);
     });
 
-    socket.on("feedback", (recieved_feedback) => {
+    const updateRanking = (feedback: Array) => {
+      const holder = { ...ranking };
+      console.log("ranking before", holder);
+
+      feedback.forEach((user) => {
+        if (holder[user.username] === undefined) {
+          holder[user.username] = 0;
+        }
+        if (user.correct) {
+          holder[user.username] += 1;
+        }
+      });
+      setRanking(holder);
+
+      /*if (!ranking) {
+        feedback.forEach((user) => {
+          if (user.correct) {
+            holder[user.username] = 1;
+          } else {
+            holder[user.username] = 0;
+          }
+        });
+        setRanking(holder);
+      }
+      if (ranking) {
+        feedback.forEach((user) => {
+          if (user.correct) {
+            holder[user.username] = ranking.username + 1;
+            console.log("ranking score", ranking.username);
+          } else {
+            holder[user.username] = ranking.username;
+          }
+        });
+        setRanking(holder);
+      }*/
+
+      /*feedback.forEach((user) => {
+        holder[user.username] = 0;
+        if (user.correct) {
+          if (!ranking) {
+            holder[user] = 1;
+          } else {
+            ranking[user] += 1;
+          }
+        }
+      }); */
+      console.log("ranking after", holder);
+    };
+
+    socket.on("feedback", (recieved_feedback: Array) => {
       console.log("feedback", recieved_feedback);
       recieved_feedback.forEach((user) => {
         if (user.username === username) {
@@ -66,6 +117,8 @@ const Quiz_live = () => {
           }
         }
       });
+
+      updateRanking(recieved_feedback);
       setTimeout(() => {
         setFeedback(recieved_feedback);
         setSelected(null);
@@ -75,7 +128,7 @@ const Quiz_live = () => {
   }, []);
 
   const checkAnswer = (selectedAnswer: number, time: number) => {
-    console.log("check answer function");
+    console.log("check answer function", time);
     setSelected(selectedAnswer);
     let answer;
     if (selectedAnswer === questions[questionIndex].correctAnswer) {
@@ -105,6 +158,7 @@ const Quiz_live = () => {
           key={questions[questionIndex].id}
           selected={selected}
           feedback={feedback}
+          ranking={ranking}
         ></Quiz_Question>
       )}
       {!questions && <p>Loading..</p>}
@@ -118,9 +172,9 @@ const Quiz_Question = ({
   decision,
   selected,
   feedback,
+  ranking,
 }) => {
   const [time, setTime] = useState<number>(30);
-
   const [OneStyling, setOneStyling] = useState<string>(
     "bg-lime-400 hover:bg-lime-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl "
   );
@@ -229,7 +283,10 @@ const Quiz_Question = ({
               Correct
             </p>
           )}
-          {decision === "deciding" && feedback && JSON.stringify(feedback)}
+          {decision === "deciding" &&
+            feedback &&
+            JSON.stringify(feedback) &&
+            JSON.stringify(ranking)}
           <div className="flex flex-col items-center justify-center">
             <button
               className=" text-md text-black font-bold bg-green-400 rounded p-3 hover:bg-white hover:text-black"
@@ -242,7 +299,7 @@ const Quiz_Question = ({
           </div>
         </div>
         <div className="grid grid-rows-2 grid-cols-2">
-          <div className={buttonStyling} onClick={() => checkAnswer(1)}>
+          <div className={buttonStyling} onClick={() => checkAnswer(1, time)}>
             <p
               className={OneStyling}
               style={{
@@ -252,7 +309,7 @@ const Quiz_Question = ({
               {question.answerOne}
             </p>
           </div>
-          <div className={buttonStyling} onClick={() => checkAnswer(2)}>
+          <div className={buttonStyling} onClick={() => checkAnswer(2, time)}>
             <p
               className={TwoStyling}
               style={{
@@ -262,7 +319,7 @@ const Quiz_Question = ({
               {question.answerTwo}
             </p>
           </div>
-          <div className={buttonStyling} onClick={() => checkAnswer(3)}>
+          <div className={buttonStyling} onClick={() => checkAnswer(3, time)}>
             <p
               className={ThreeStyling}
               style={{
@@ -272,7 +329,7 @@ const Quiz_Question = ({
               {question.answerThree}
             </p>
           </div>
-          <div className={buttonStyling} onClick={() => checkAnswer(4)}>
+          <div className={buttonStyling} onClick={() => checkAnswer(4, time)}>
             <p
               className={FourStyling}
               style={{

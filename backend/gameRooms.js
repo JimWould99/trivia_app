@@ -1,10 +1,10 @@
 const roomIds = {};
 
-let quizQuestions = {};
+//let quizQuestions = {};
 let answers = {};
-let questionIndex = {};
-let timers = {};
-let shortTimers = {};
+//let questionIndex = {};
+
+const ranking = {};
 /*
 store-
 const = [question 1: [{user: playerOne, time: 20sec, correct: false}], question 2: [{user: playerOne, time: 20sec, correct: false}] ] 
@@ -23,6 +23,8 @@ const answers= {room1: {question 1: [{user: playerOne, time: 20sec, correct: fal
 const answers = {room: [{user: playerOne, time: 20sec, correct: false}]}
 then reset for each question
 dont store anything yet
+
+const ranking
 */
 
 module.exports = (io, socket) => {
@@ -57,7 +59,7 @@ module.exports = (io, socket) => {
       setTimeout(() => {
         io.to(Number(room)).emit("increase_index", answers[room]);
         answers[room] = [];
-      }, 4 * 1000);
+      }, 5 * 1000);
     }
   });
 

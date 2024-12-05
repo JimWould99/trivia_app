@@ -27,6 +27,7 @@ const Enter_room = () => {
       });
 
       socket.on("join-confirmation", (objects) => {
+        console.log("join room", room);
         const playersArray = [];
         objects.forEach((player) => {
           playersArray.push(player.name);
@@ -35,15 +36,15 @@ const Enter_room = () => {
       });
 
       socket.on("question", (question) => {
-        console.log("received question");
-        navigate("/quiz_client", { state: { question } });
+        console.log("room enter page", room);
+        navigate("/quiz_client", { state: { question, username, room } });
       });
     }
 
     /* return () => {
       newSocket.disconnect();
     };*/
-  }, [socket]);
+  }, [socket, room, username]);
 
   const enterRoom = () => {
     socket.emit("join-room", room, username);

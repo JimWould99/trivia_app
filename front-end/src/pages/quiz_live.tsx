@@ -16,6 +16,8 @@ const Quiz_live = () => {
 
   const [feedback, setFeedback] = useState<Array | null>(null);
 
+  const [selected, setSelected] = useState<number | null>(null);
+
   console.log("socket", socket);
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -35,7 +37,7 @@ const Quiz_live = () => {
       // console.log(quiz.name, ":", json.questions, "quiz id", quiz.id);
       if (response.ok) {
         setQuestions(json.questions);
-        socket.emit("game_connection", json.questions, room);
+        socket.emit("game_connection", json.questions, room, "host");
       }
     };
     fetchQuestions();
@@ -46,25 +48,31 @@ const Quiz_live = () => {
     });
 
     socket.on("feedback", (feedback) => {
+      setSelected(null);
+      console.log("feedback", feedback);
       setFeedback(feedback);
-      console.log(JSON.stringify("feedback", feedback));
       setDecision("correct");
     });
   }, []);
 
   const checkAnswer = (selectedAnswer: number, time: number) => {
     console.log("check answer function");
+    setSelected(selectedAnswer);
     let answer;
     if (selectedAnswer === currentQuestion.correctAnswer) {
       answer = true;
     } else {
       answer = false;
     }
-    socket.emit("check-answer", {
-      username: username,
-      time: time,
-      correct: answer,
-    });
+    socket.emit(
+      "check-answer",
+      {
+        username: username,
+        time: time,
+        correct: answer,
+      },
+      room
+    );
   };
 
   return (
@@ -76,13 +84,14 @@ const Quiz_live = () => {
           checkAnswer={checkAnswer}
           decision={decision}
           key={currentQuestion.id}
+          selected={selected}
         ></Quiz_Question>
       )}
     </>
   );
 };
 
-const Quiz_Question = ({ question, checkAnswer, decision }) => {
+const Quiz_Question = ({ question, checkAnswer, decision, selected }) => {
   const [time, setTime] = useState<number>(30);
 
   const [OneStyling, setOneStyling] = useState<string>(
@@ -146,6 +155,30 @@ const Quiz_Question = ({ question, checkAnswer, decision }) => {
       setButtonStyling("p-2 pointer-events-none");
     }
   }, [decision]);
+
+  useEffect(() => {
+    if (selected) {
+      setButtonStyling("p-2 pointer-events-none");
+    }
+    console.log("selected", selected);
+    if (selected === 1) {
+      setOneStyling(
+        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+      );
+    } else if (selected === 2) {
+      setTwoStyling(
+        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+      );
+    } else if (selected === 3) {
+      setThreeStyling(
+        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+      );
+    } else if (selected === 4) {
+      setFourStyling(
+        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+      );
+    }
+  }, [selected]);
 
   return (
     <>

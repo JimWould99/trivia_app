@@ -19,24 +19,29 @@ const timer = {room: timer}
 module.exports = (io, socket) => {
   console.log("socket id:", socket.id);
 
-  socket.on("game_connection", (questions, room) => {
+  socket.on("game_connection", (questions, room, connect) => {
     //console.log("questions", questions);
     console.log("game connection");
-    quizQuestions[room] = questions;
-    questionIndex[room] = 0;
-    let roomValues = {};
-    for (let i = 0; i <= questions.length - 1; i++) {
-      roomValues[Number(i)] = [];
-    }
-    answers[room] = roomValues;
-    io.to(room).emit("question", quizQuestions[room][questionIndex[room]]);
 
-    socket.on("check-answer", (object) => {
+    if (connect === "host") {
+      quizQuestions[room] = questions;
+      questionIndex[room] = 0;
+      let roomValues = {};
+      for (let i = 0; i <= questions.length - 1; i++) {
+        roomValues[Number(i)] = [];
+      }
+      answers[room] = roomValues;
+      io.to(room).emit("question", quizQuestions[room][questionIndex[room]]);
+    }
+
+    socket.on("check-answer", (object, room) => {
       console.log("before", answers);
+      console.log("room", room);
       answers[room][questionIndex[room]].push(object);
       console.log("after", answers);
       let answersArray = answers[room][questionIndex[room]];
 
+      console.log("room", roomIds[room]);
       if (answersArray.length !== roomIds[room].length * 2) {
         console.log("not all responses received");
         return;

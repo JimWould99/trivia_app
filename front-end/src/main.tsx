@@ -11,6 +11,9 @@ import Create_game from "./pages/create_game";
 import Enter_room from "./pages/enter_room";
 import Quiz_live from "./pages/quiz_live";
 import Quiz_client from "./pages/quiz_live_client";
+import Response_display from "./components/response_display";
+import Leaderboad_display from "./components/leaderboard";
+import Leaderboard_display from "./components/leaderboard";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +31,8 @@ const router = createBrowserRouter([
   { path: "/join_game", element: <Enter_room /> },
   { path: "/quiz_live", element: <Quiz_live /> },
   { path: "/quiz_client", element: <Quiz_client /> },
+  { path: "/response_display", element: <Response_display /> },
+  { path: "/leaderboard", element: <Leaderboard_display /> },
 ]);
 
 createRoot(document.getElementById("root")!).render(

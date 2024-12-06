@@ -2,6 +2,8 @@ import { useLocation } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import Header from "../components/header";
 import { SocketContext } from "../context/socket";
+import Response_display from "../components/response_display.jsx";
+import Leaderboard_display from "../components/leaderboard.js";
 
 const Quiz_live = () => {
   const location = useLocation();
@@ -19,6 +21,7 @@ const Quiz_live = () => {
   const [selected, setSelected] = useState<number | null>(null);
 
   const [ranking, setRanking] = useState<object | null>(null);
+  const [displayRanking, setDisplayRanking] = useState<boolean>(false);
 
   useEffect(() => {
     if (user === "client") {
@@ -53,61 +56,32 @@ const Quiz_live = () => {
 
     socket.on("increase_index", (question) => {
       console.log("received new");
+      setDisplayRanking(false);
       setQuestionIndex((prev) => prev + 1);
-      setFeedback(null);
     });
 
     const updateRanking = (feedback: Array) => {
+      console.log("ranking", ranking);
       const holder = { ...ranking };
-      console.log("ranking before", holder);
 
       feedback.forEach((user) => {
         if (holder[user.username] === undefined) {
           holder[user.username] = 0;
         }
         if (user.correct) {
-          holder[user.username] += 1;
+          let divisor = 1 + user.time / 30;
+          let score = 10 * divisor;
+          holder[user.username] += score;
         }
       });
       setRanking(holder);
 
-      /*if (!ranking) {
-        feedback.forEach((user) => {
-          if (user.correct) {
-            holder[user.username] = 1;
-          } else {
-            holder[user.username] = 0;
-          }
-        });
-        setRanking(holder);
-      }
-      if (ranking) {
-        feedback.forEach((user) => {
-          if (user.correct) {
-            holder[user.username] = ranking.username + 1;
-            console.log("ranking score", ranking.username);
-          } else {
-            holder[user.username] = ranking.username;
-          }
-        });
-        setRanking(holder);
-      }*/
-
-      /*feedback.forEach((user) => {
-        holder[user.username] = 0;
-        if (user.correct) {
-          if (!ranking) {
-            holder[user] = 1;
-          } else {
-            ranking[user] += 1;
-          }
-        }
-      }); */
       console.log("ranking after", holder);
     };
 
     socket.on("feedback", (recieved_feedback: Array) => {
       console.log("feedback", recieved_feedback);
+      setSelected(null);
       recieved_feedback.forEach((user) => {
         if (user.username === username) {
           if (user.correct) {
@@ -118,14 +92,23 @@ const Quiz_live = () => {
         }
       });
 
-      updateRanking(recieved_feedback);
       setTimeout(() => {
         setFeedback(recieved_feedback);
-        setSelected(null);
         setDecision("deciding");
-      }, 2 * 1000);
+        setTimeout(() => {
+          setFeedback(null);
+          updateRanking(recieved_feedback);
+          setDisplayRanking(true);
+        }, 2.5 * 1000);
+      }, 1 * 1000);
     });
-  }, []);
+
+    return () => {
+      socket.off("feedback");
+      socket.off("increase_index");
+      socket.off("setQuestions");
+    };
+  }, [ranking]);
 
   const checkAnswer = (selectedAnswer: number, time: number) => {
     console.log("check answer function", time);
@@ -146,7 +129,8 @@ const Quiz_live = () => {
       room
     );
   };
-
+  console.log("questions", questions);
+  console.log("question index", questionIndex);
   return (
     <>
       <p>quiz live</p>
@@ -159,6 +143,7 @@ const Quiz_live = () => {
           selected={selected}
           feedback={feedback}
           ranking={ranking}
+          displayRanking={displayRanking}
         ></Quiz_Question>
       )}
       {!questions && <p>Loading..</p>}
@@ -173,19 +158,20 @@ const Quiz_Question = ({
   selected,
   feedback,
   ranking,
+  displayRanking,
 }) => {
   const [time, setTime] = useState<number>(30);
   const [OneStyling, setOneStyling] = useState<string>(
-    "bg-lime-400 hover:bg-lime-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl "
+    "box-border hover:border-lime-300 border-2 border-lime-400 bg-lime-400 hover:bg-lime-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl "
   );
   const [TwoStyling, setTwoStyling] = useState<string>(
-    "bg-yellow-400 hover:bg-yellow-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl"
+    "box-border hover:border-yellow-300  border-2 border-yellow-400 bg-yellow-400 hover:bg-yellow-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl"
   );
   const [ThreeStyling, setThreeStyling] = useState<string>(
-    "bg-blue-400 hover:bg-blue-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl"
+    "box-border hover:border-blue-300 border-2 border-blue-400 bg-blue-400 hover:bg-blue-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl"
   );
   const [FourStyling, setFourStyling] = useState<string>(
-    "bg-red-400 hover:bg-red-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl"
+    "box-border hover:border-red-300 border-2 border-red-400 bg-red-400 hover:bg-red-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl"
   );
   const [buttonStyling, setButtonStyling] = useState<string>("p-2");
 
@@ -208,18 +194,18 @@ const Quiz_Question = ({
 
   useEffect(() => {
     if (decision !== "deciding") {
-      let one = "bg-red-400 opacity-40";
-      let two = "bg-red-400 opacity-40";
-      let three = "bg-red-400 opacity-40";
-      let four = "bg-red-400 opacity-40";
+      let one = "bg-red-400 opacity-40 box-border border-2 border-red-400";
+      let two = "bg-red-400 opacity-40 box-border border-2 border-red-400";
+      let three = "bg-red-400 opacity-40 box-border border-2 border-red-400";
+      let four = "bg-red-400 opacity-40 box-border border-2 border-red-400";
       if (question.correctAnswer === 1) {
-        one = "bg-green-400";
+        one = "bg-green-400 box-border border-2 border-green-400";
       } else if (question.correctAnswer === 2) {
-        two = "bg-green-400";
+        two = "bg-green-400 box-border border-2 border-green-400";
       } else if (question.correctAnswer === 3) {
-        three = "bg-green-400";
+        three = "bg-green-400 box-border border-2 border-green-400";
       } else if (question.correctAnswer === 4) {
-        four = "bg-green-400";
+        four = "bg-green-400 box-border border-2 border-green-400";
       }
       setOneStyling(
         `${one} rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
@@ -244,23 +230,22 @@ const Quiz_Question = ({
     console.log("selected", selected);
     if (selected === 1) {
       setOneStyling(
-        `border-2 border-white bg-lime-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+        `box-border border-2 border-white bg-lime-200 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
       );
     } else if (selected === 2) {
       setTwoStyling(
-        `border-2 border-white bg-yellow-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+        `box-border border-2 border-white bg-yellow-200 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
       );
     } else if (selected === 3) {
       setThreeStyling(
-        `border-2 border-white bg-blue-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+        `box-border border-2 border-white bg-blue-200 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
       );
     } else if (selected === 4) {
       setFourStyling(
-        `border-2 border-white bg-red-400 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
+        `box-border border-2 border-white bg-red-200 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
       );
     }
   }, [selected]);
-
   return (
     <>
       <Header></Header>
@@ -283,10 +268,12 @@ const Quiz_Question = ({
               Correct
             </p>
           )}
-          {decision === "deciding" &&
-            feedback &&
-            JSON.stringify(feedback) &&
-            JSON.stringify(ranking)}
+          {decision === "deciding" && feedback && (
+            <Response_display responses={feedback}></Response_display>
+          )}
+          {decision === "deciding" && displayRanking && (
+            <Leaderboard_display users={ranking}></Leaderboard_display>
+          )}
           <div className="flex flex-col items-center justify-center">
             <button
               className=" text-md text-black font-bold bg-green-400 rounded p-3 hover:bg-white hover:text-black"
@@ -306,6 +293,12 @@ const Quiz_Question = ({
                 boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
               }}
             >
+              {selected === 1 && (
+                <div
+                  style={{ position: "absolute", left: "35%" }}
+                  className="rounded-full h-8 w-8 bg-white"
+                ></div>
+              )}
               {question.answerOne}
             </p>
           </div>
@@ -316,6 +309,12 @@ const Quiz_Question = ({
                 boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
               }}
             >
+              {selected === 2 && (
+                <div
+                  style={{ position: "absolute", left: "35%" }}
+                  className="rounded-full h-8 w-8 bg-white"
+                ></div>
+              )}
               {question.answerTwo}
             </p>
           </div>
@@ -326,6 +325,12 @@ const Quiz_Question = ({
                 boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
               }}
             >
+              {selected === 3 && (
+                <div
+                  style={{ position: "absolute", left: "35%" }}
+                  className="rounded-full h-8 w-8 bg-white"
+                ></div>
+              )}
               {question.answerThree}
             </p>
           </div>
@@ -336,6 +341,12 @@ const Quiz_Question = ({
                 boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
               }}
             >
+              {selected === 4 && (
+                <div
+                  style={{ position: "absolute", left: "35%" }}
+                  className="rounded-full h-8 w-8 bg-white"
+                ></div>
+              )}
               {question.answerFour}
             </p>
           </div>

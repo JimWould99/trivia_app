@@ -42,7 +42,7 @@ module.exports = (io, socket) => {
     socket.to(room).emit("join_game", "buffer");
     setTimeout(() => {
       io.to(room).emit("setQuestions", questions);
-    }, 1 * 1000);
+    }, 0.5 * 1000);
   });
 
   socket.on("check-answer", (object, room) => {
@@ -59,7 +59,7 @@ module.exports = (io, socket) => {
       setTimeout(() => {
         io.to(Number(room)).emit("increase_index", answers[room]);
         answers[room] = [];
-      }, 5 * 1000);
+      }, 5.5 * 1000);
     }
   });
 

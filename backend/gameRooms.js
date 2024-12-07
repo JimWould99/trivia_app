@@ -46,6 +46,12 @@ module.exports = (io, socket) => {
   });
 
   socket.on("check-answer", (object, room) => {
+    /*for (let i = 0; i <= answers[room].length - 1; i++) {
+      if (object.username === answers[room][i].username) {
+        return;
+      }
+    } */
+    console.log("object", object);
     answers[room].push(object);
     console.log("answers", answers[room], answers[room].length);
     console.log("room", roomIds[room], roomIds[room].length);

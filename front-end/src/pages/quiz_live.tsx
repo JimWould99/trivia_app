@@ -1,28 +1,25 @@
 import { useLocation } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import Header from "../components/header";
 import { SocketContext } from "../context/socket";
 import Response_display from "../components/response_display.jsx";
 import Leaderboard_display from "../components/leaderboard.js";
+import { useNavigate } from "react-router-dom";
 
 const Quiz_live = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const { quizId, room, username, user } = location.state;
   const { socket, setSocket } = useContext(SocketContext);
-
   const [questions, setQuestions] = useState<Array>();
-
   const [questionIndex, setQuestionIndex] = useState<number>(0);
-
   const [decision, setDecision] = useState<string>("deciding");
-
   const [feedback, setFeedback] = useState<Array | null>(null);
-
   const [selected, setSelected] = useState<number | null>(null);
-
   const [ranking, setRanking] = useState<object | null>(null);
   const [displayRanking, setDisplayRanking] = useState<boolean>(false);
-
+  const clicked = useRef(false);
   useEffect(() => {
     if (user === "client") {
       return;
@@ -48,22 +45,22 @@ const Quiz_live = () => {
     };
     fetchQuestions();
   }, []);
-
   useEffect(() => {
     socket.on("setQuestions", (questions: Array) => {
       setQuestions(questions);
     });
-
     socket.on("increase_index", (question) => {
-      console.log("received new");
+      if (questionIndex + 1 === questions.length) {
+        console.log("reroute");
+        navigate("/quiz_finish", { state: { ranking, quizId } });
+      }
+      clicked.current = false;
       setDisplayRanking(false);
       setQuestionIndex((prev) => prev + 1);
     });
-
     const updateRanking = (feedback: Array) => {
-      console.log("ranking", ranking);
+      // console.log("ranking", ranking);
       const holder = { ...ranking };
-
       feedback.forEach((user) => {
         if (holder[user.username] === undefined) {
           holder[user.username] = 0;
@@ -75,12 +72,9 @@ const Quiz_live = () => {
         }
       });
       setRanking(holder);
-
-      console.log("ranking after", holder);
+      //console.log("ranking after", holder);
     };
-
     socket.on("feedback", (recieved_feedback: Array) => {
-      console.log("feedback", recieved_feedback);
       setSelected(null);
       recieved_feedback.forEach((user) => {
         if (user.username === username) {
@@ -91,7 +85,6 @@ const Quiz_live = () => {
           }
         }
       });
-
       setTimeout(() => {
         setFeedback(recieved_feedback);
         setDecision("deciding");
@@ -102,7 +95,6 @@ const Quiz_live = () => {
         }, 2.5 * 1000);
       }, 1 * 1000);
     });
-
     return () => {
       socket.off("feedback");
       socket.off("increase_index");
@@ -112,6 +104,7 @@ const Quiz_live = () => {
 
   const checkAnswer = (selectedAnswer: number, time: number) => {
     console.log("check answer function", time);
+    clicked.current = true;
     setSelected(selectedAnswer);
     let answer;
     if (selectedAnswer === questions[questionIndex].correctAnswer) {
@@ -129,11 +122,8 @@ const Quiz_live = () => {
       room
     );
   };
-  console.log("questions", questions);
-  console.log("question index", questionIndex);
   return (
     <>
-      <p>quiz live</p>
       {questions && questions[questionIndex] && (
         <Quiz_Question
           question={questions[questionIndex]}
@@ -144,13 +134,13 @@ const Quiz_live = () => {
           feedback={feedback}
           ranking={ranking}
           displayRanking={displayRanking}
+          clicked={clicked}
         ></Quiz_Question>
       )}
       {!questions && <p>Loading..</p>}
     </>
   );
 };
-
 const Quiz_Question = ({
   question,
   checkAnswer,
@@ -159,8 +149,11 @@ const Quiz_Question = ({
   feedback,
   ranking,
   displayRanking,
+  clicked,
 }) => {
   const [time, setTime] = useState<number>(30);
+
+  //const [called, setCalled] = useState<boolean>(false);
   const [OneStyling, setOneStyling] = useState<string>(
     "box-border hover:border-lime-300 border-2 border-lime-400 bg-lime-400 hover:bg-lime-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl "
   );
@@ -174,24 +167,21 @@ const Quiz_Question = ({
     "box-border hover:border-red-300 border-2 border-red-400 bg-red-400 hover:bg-red-300 rounded flex justify-center p-2 text-2xl font-bold cursor-pointer drop-shadow-xl"
   );
   const [buttonStyling, setButtonStyling] = useState<string>("p-2");
-
   useEffect(() => {
     const interval = setInterval(() => {
       setTime((prev_time) => {
-        if (prev_time - 1 === 0) {
-          checkAnswer(5);
+        if (prev_time - 1 === 0 && !clicked.current) {
+          clicked.current = true;
+          checkAnswer(5, 0);
         }
         return prev_time - 1;
       });
     }, 1000);
-
     if (decision !== "deciding") {
       clearInterval(interval);
     }
-
     return () => clearInterval(interval);
   }, [decision]);
-
   useEffect(() => {
     if (decision !== "deciding") {
       let one = "bg-red-400 opacity-40 box-border border-2 border-red-400";
@@ -222,12 +212,10 @@ const Quiz_Question = ({
       setButtonStyling("p-2 pointer-events-none");
     }
   }, [decision]);
-
   useEffect(() => {
     if (selected) {
       setButtonStyling("p-2 pointer-events-none");
     }
-    console.log("selected", selected);
     if (selected === 1) {
       setOneStyling(
         `box-border border-2 border-white bg-lime-200 rounded flex justify-center p-2 text-2xl font-bold drop-shadow-xl `
@@ -249,7 +237,6 @@ const Quiz_Question = ({
   return (
     <>
       <Header></Header>
-
       <div className="flex justify-center py-6">
         <h1 className="text-3xl">{question && question.question}</h1>
       </div>
@@ -355,5 +342,4 @@ const Quiz_Question = ({
     </>
   );
 };
-
 export default Quiz_live;

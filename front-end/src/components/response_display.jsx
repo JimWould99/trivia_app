@@ -13,7 +13,11 @@ const Response_display = ({ responses }) => {
                 ) : (
                   <p className="text-xl">Incorrect</p>
                 )}
-                <p className="text">({response.time} seconds)</p>
+                {response.time !== 0 ? (
+                  <p className="text">({response.time} seconds) </p>
+                ) : (
+                  <p>No Time</p>
+                )}
               </div>
             );
           })}

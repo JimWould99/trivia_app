@@ -14,6 +14,7 @@ import Quiz_client from "./pages/quiz_live_client";
 import Response_display from "./components/response_display";
 import Leaderboad_display from "./components/leaderboard";
 import Leaderboard_display from "./components/leaderboard";
+import Quiz_finish_online from "./pages/quiz_finish_multi";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
   { path: "/quiz_client", element: <Quiz_client /> },
   { path: "/response_display", element: <Response_display /> },
   { path: "/leaderboard", element: <Leaderboard_display /> },
+  { path: "/quiz_finish", element: <Quiz_finish_online /> },
 ]);
 
 createRoot(document.getElementById("root")!).render(

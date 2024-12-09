@@ -22,6 +22,7 @@ exports.display_user_quizzes = async (req, res) => {
 
 exports.display_all_quizzes = async (req, res) => {
   const quizzes = await prisma.quiz.findMany({
+    take: 3,
     orderBy: { createdAt: "asc" },
   });
 

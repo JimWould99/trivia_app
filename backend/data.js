@@ -11,7 +11,7 @@ async function main() {
     },
   });*/
   //const user = await prisma.budget.deleteMany();
-  //const deleteExpense = await prisma.users.deleteMany({});
+  const deleteExpense = await prisma.User.deleteMany({});
 }
 
 main()

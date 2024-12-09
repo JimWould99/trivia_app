@@ -8,6 +8,7 @@ import { AuthContext } from "../context/auth_context";
 const Home = () => {
   const { user } = useContext(AuthContext);
   const [quizzes, setQuizzes] = useState<Array>();
+  const [userQuizzes, setUserQuizzes] = useState<Array>();
   useEffect(() => {
     const fetchQuizzes = async () => {
       const options = {
@@ -23,8 +24,38 @@ const Home = () => {
         setQuizzes(json.quizzes);
       }
     };
+
+    const fetchUserQuizzes = async () => {
+      console.log("started");
+      let userId = user.id;
+
+      const options = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_URL}/trivia_user/show_user_quizzes`,
+        options
+      );
+
+      const json = await response.json();
+      console.log("user quizzes", json.quizzes);
+
+      if (response.ok) {
+        setUserQuizzes(json.quizzes);
+      }
+    };
+
     fetchQuizzes();
-  }, []);
+    if (user) {
+      fetchUserQuizzes();
+    }
+  }, [user]);
   return (
     <>
       <Header></Header>
@@ -33,7 +64,7 @@ const Home = () => {
         <div className="grid grid-cols-[1fr_2fr]">
           <div className="flex flex-col p-4 pt-6 gap-6">
             <div className="bg-slate-200 p-5 flex flex-col  rounded-md drop-shadow-xl">
-              <p className="text-xl mb-2">{user && user.email}</p>
+              <p className="text-xl font-bold mb-2">{user && user.email}</p>
               <div className="flex flex-col gap-1">
                 <p>Quizzes played: (number)</p>
                 <p>Quizzes won: (number) and (percent)</p>
@@ -42,17 +73,24 @@ const Home = () => {
               </div>
             </div>
             <div className="bg-slate-200 p-5 flex flex-col rounded-md drop-shadow-xl">
-              <p>My quizzes</p>
+              <p className="text-xl font-bold">My recent quizzes</p>
+              {userQuizzes && userQuizzes.length === 0 && (
+                <p className="mt-5">No quizzes yet</p>
+              )}
               <div className="p-5 pl-0 bg-slate-200 grid grid-cols-1 gap-6">
-                {quizzes &&
-                  quizzes.map((quiz) => {
+                {userQuizzes &&
+                  userQuizzes.map((quiz, index) => {
                     return (
-                      <div>
-                        <Quiz_display_second
-                          quiz={quiz}
-                          key={quiz.id}
-                        ></Quiz_display_second>
-                      </div>
+                      <>
+                        {index < 3 && (
+                          <div>
+                            <Quiz_display_second
+                              quiz={quiz}
+                              key={quiz.id}
+                            ></Quiz_display_second>
+                          </div>
+                        )}
+                      </>
                     );
                   })}
               </div>

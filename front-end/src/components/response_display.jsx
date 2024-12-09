@@ -7,11 +7,20 @@ const Response_display = ({ responses }) => {
           {responses.map((response) => {
             return (
               <div className="flex gap-1 items-center">
-                <p className="text-xl font-bold">{response.username} :</p>
                 {response.correct ? (
-                  <p className="text-xl">correct</p>
+                  <>
+                    <p className="text-xl font-bold text-green-600">
+                      {response.username} :
+                    </p>
+                    <p className="text-xl text-green-600">correct</p>
+                  </>
                 ) : (
-                  <p className="text-xl">Incorrect</p>
+                  <>
+                    <p className="text-xl font-bold text-red-600">
+                      {response.username} :
+                    </p>
+                    <p className="text-xl text-red-600">Incorrect</p>
+                  </>
                 )}
                 {response.time !== 0 ? (
                   <p className="text">({response.time} seconds) </p>

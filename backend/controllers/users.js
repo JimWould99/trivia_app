@@ -48,8 +48,9 @@ exports.add_user = async (req, res) => {
       password: hash,
     },
   });
+  let id = new_user.id;
   const token = createToken(new_user.id);
-  res.json({ email, token });
+  res.json({ email, token, id });
 };
 exports.login_user = async (req, res) => {
   const { email, password } = req.body;

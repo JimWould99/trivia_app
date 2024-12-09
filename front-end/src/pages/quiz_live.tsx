@@ -241,7 +241,7 @@ const Quiz_Question = ({
         <h1 className="text-3xl">{question && question.question}</h1>
       </div>
       <div className="bg-slate-200 pb-8">
-        <div className="flex justify-between py-10 px-14">
+        <div className="flex justify-between py-10 px-14 h-[35vh] items-center">
           <div className="rounded-full bg-sky-900 w-20 h-20 flex justify-center content-center items-center">
             <p className="text-white font-bold text-4xl">{time}</p>
           </div>
@@ -261,7 +261,7 @@ const Quiz_Question = ({
           {decision === "deciding" && displayRanking && (
             <Leaderboard_display users={ranking}></Leaderboard_display>
           )}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center invisible">
             <button
               className=" text-md text-black font-bold bg-green-400 rounded p-3 hover:bg-white hover:text-black"
               style={{

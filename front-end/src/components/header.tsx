@@ -3,18 +3,28 @@ import { Link } from "react-router-dom";
 const Header = () => {
   return (
     <>
-      <div className="h-20 flex justify-between items-center px-14 bg-orange-200 border-b-2 border-stone-400">
+      <div className="h-20 flex justify-between items-center px-20 bg-orange-200 border-b-2 border-stone-400">
         <Link to="/">
           <p className="text-3xl font-bold">Trivia site</p>
         </Link>
         <div className="flex gap-3">
+          <Link to="/join_game">
+            <button
+              className="text-md text-white font-bold bg-fuchsia-800 rounded p-2.5 hover:bg-white hover:text-black"
+              style={{
+                boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
+              }}
+            >
+              Join game
+            </button>
+          </Link>
           <button
             className="text-md text-white font-bold bg-fuchsia-800 rounded p-2.5 hover:bg-white hover:text-black"
             style={{
               boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
             }}
           >
-            Create new
+            Create new deck
           </button>
           <button className="bg-blue-900 rounded-full p-2.5 hover:bg-blue-700 ">
             <svg

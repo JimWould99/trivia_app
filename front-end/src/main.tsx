@@ -4,6 +4,7 @@ import "./index.css";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { SocketContextProvider } from "./context/socket";
+import { AuthContextProvider } from "./context/auth_context";
 
 import Home from "./pages/home";
 import Question_collection from "./pages/quiz_question";
@@ -15,6 +16,14 @@ import Response_display from "./components/response_display";
 import Leaderboad_display from "./components/leaderboard";
 import Leaderboard_display from "./components/leaderboard";
 import Quiz_finish_online from "./pages/quiz_finish_multi";
+import Initial from "./pages/initial";
+import Create_quiz_page from "./pages/create_quiz";
+import Join_option from "./pages/join_option";
+
+import Login_page from "./pages/login";
+import Sign_up_Page from "./pages/sign_up";
+import Account_page from "./pages/account_page";
+import Login_sign_up from "./pages/login-sign-up";
 
 const router = createBrowserRouter([
   {
@@ -35,12 +44,21 @@ const router = createBrowserRouter([
   { path: "/response_display", element: <Response_display /> },
   { path: "/leaderboard", element: <Leaderboard_display /> },
   { path: "/quiz_finish", element: <Quiz_finish_online /> },
+  { path: "/home", element: <Initial /> },
+  { path: "/login", element: <Login_page /> },
+  { path: "/sign_up", element: <Sign_up_Page /> },
+  { path: "/account_page", element: <Account_page /> },
+  { path: "/create_quiz", element: <Create_quiz_page /> },
+  { path: "/join_option", element: <Join_option /> },
+  { path: "/sign_up_login", element: <Login_sign_up /> },
 ]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <SocketContextProvider>
-      <RouterProvider router={router}></RouterProvider>
-    </SocketContextProvider>
+    <AuthContextProvider>
+      <SocketContextProvider>
+        <RouterProvider router={router}></RouterProvider>
+      </SocketContextProvider>
+    </AuthContextProvider>
   </StrictMode>
 );

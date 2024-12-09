@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Quiz_display from "../components/quiz_display";
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 import Quiz_display_second from "../components/quiz_display_second";
+import { AuthContext } from "../context/auth_context";
 
 const Home = () => {
+  const { user } = useContext(AuthContext);
   const [quizzes, setQuizzes] = useState<Array>();
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -31,7 +33,7 @@ const Home = () => {
         <div className="grid grid-cols-[1fr_2fr]">
           <div className="flex flex-col p-4 pt-6 gap-6">
             <div className="bg-slate-200 p-5 flex flex-col  rounded-md drop-shadow-xl">
-              <p className="text-lg mb-2">exampleEmail@email.com</p>
+              <p className="text-xl mb-2">{user && user.email}</p>
               <div className="flex flex-col gap-1">
                 <p>Quizzes played: (number)</p>
                 <p>Quizzes won: (number) and (percent)</p>

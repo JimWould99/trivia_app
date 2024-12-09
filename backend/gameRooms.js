@@ -75,11 +75,12 @@ module.exports = (io, socket) => {
     // console.log(`${socket.id} created ${room}`);
     roomIds[room] = [{ id: socket.id, name: name }];
     console.log(`add room ${JSON.stringify(roomIds)}`);
-    socket.emit("confirm-create-room", room);
+    socket.emit("confirm-create-room", room, name);
   });
 
   socket.on("join-room", (room, name) => {
     if (!roomIds[room]) {
+      socket.emit("room-not-found", room);
       return;
     }
     socket.join(Number(room));

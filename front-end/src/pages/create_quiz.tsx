@@ -9,14 +9,14 @@ const Create_quiz_page = () => {
 
   const [quizName, setQuizName] = useState<string>("");
 
-  const [emptyMsg, setEmptyMsg] = useState<string>("text-white");
+  const [emptyMsg, setEmptyMsg] = useState<string>("text-fuchsia-800");
 
   const createQuiz = async () => {
     if (!user) {
       return;
     }
     if (quizName === "") {
-      setEmptyMsg("");
+      setEmptyMsg("text-white");
       return;
     }
     const options = {
@@ -46,19 +46,29 @@ const Create_quiz_page = () => {
   return (
     <>
       <Header></Header>
-      <div>
-        <div>
-          <p>Quiz Name</p>
-          <input
-            type="text"
-            value={quizName}
-            onChange={(event) => {
-              setQuizName(event.target.value);
+      <div className="h-[80vh] flex justify-center items-center">
+        <div className="flex flex-col gap-12 bg-fuchsia-800 py-10 px-6 rounded-md">
+          <p className="text-2xl mb-2 text-white">Quiz Name</p>
+          <div>
+            <input
+              type="text"
+              value={quizName}
+              onChange={(event) => {
+                setQuizName(event.target.value);
+              }}
+              className="text-lg rounded-md border border-black h-10 pl-4"
+            />
+            <p className={emptyMsg}>Please type a name</p>
+          </div>
+          <button
+            className="text-2xl text-white font-bold bg-blue-800 rounded p-1.5 hover:bg-blue-300 hover:text-black"
+            style={{
+              boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
             }}
-            className="border-2 border-black"
-          />
-          <p className={emptyMsg}>Please type a name</p>
-          <button onClick={() => createQuiz()}>Create</button>
+            onClick={() => createQuiz()}
+          >
+            Create
+          </button>
         </div>
       </div>
     </>

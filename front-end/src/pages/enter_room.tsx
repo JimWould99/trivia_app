@@ -107,7 +107,7 @@ const Enter_room = () => {
         <div className="flex flex-col items-center bg-slate-200 h-[86vh]">
           <div className="h-10 bg-slate-200 w-full"></div>
           <p className="text-2xl mb-4">Players</p>
-          <div className="grid grid-cols-3 w-[50%] ">
+          <div className="grid grid-cols-3 w-[80%] gap-10">
             {players &&
               players.map((player) => {
                 if (player === username) {

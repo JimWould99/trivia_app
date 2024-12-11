@@ -26,7 +26,7 @@ const Home = () => {
     };
 
     const fetchUserQuizzes = async () => {
-      console.log("started");
+      console.log("started,", user);
       let userId = user.id;
 
       const options = {

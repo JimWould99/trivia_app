@@ -23,13 +23,15 @@ const Create_game = () => {
   const [room, setRoom] = useState<number>();
   const [usernameMsg, setUsernameMsg] = useState("text-white");
 
+  useEffect(() => {}, [user]);
+
   useEffect(() => {
     if (user) {
       setUsername(user.email);
     }
-  }, []);
 
-  useEffect(() => {
+    createRoom();
+
     if (socket) {
       socket.on("confirm-create-room", (roomNum, name) => {
         console.log("received");
@@ -45,9 +47,10 @@ const Create_game = () => {
         setPlayers(playersArray);
       });
     }
-  }, [socket]);
+  }, [socket, username]);
 
   const createRoom = () => {
+    console.log("create room");
     if (username === "") {
       setUsernameMsg("");
       return;
@@ -78,7 +81,7 @@ const Create_game = () => {
           <div className="h-10"></div>
 
           <div className="flex flex-col pl-20 gap-y-16 ">
-            <div className="flex gap-10 items-center">
+            <div className="flex gap-10 items-center invisible">
               <div>
                 <p>Username</p>
                 <div>

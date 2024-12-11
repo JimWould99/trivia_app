@@ -20,6 +20,7 @@ import Initial from "./pages/initial";
 import Create_quiz_page from "./pages/create_quiz";
 import Join_option from "./pages/join_option";
 import Create_questions from "./pages/create_questions";
+import My_quizzes from "./pages/my_quizzes_page";
 
 import Login_page from "./pages/login";
 import Sign_up_Page from "./pages/sign_up";
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
   { path: "/join_option", element: <Join_option /> },
   { path: "/sign_up_login", element: <Login_sign_up /> },
   { path: "/create_questions", element: <Create_questions /> },
+  { path: "/my_quizzes", element: <My_quizzes /> },
 ]);
 
 createRoot(document.getElementById("root")!).render(

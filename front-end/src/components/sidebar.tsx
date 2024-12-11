@@ -6,10 +6,14 @@ const Sidebar = () => {
   const homePage = () => {
     navigate("/");
   };
+
+  const myQuizzes = () => {
+    navigate("/my_quizzes");
+  };
   return (
     <>
       <div
-        className="pt-4 gap-4 bg-blue-200 flex flex-col items-center"
+        className="min-h-screen sticky pt-4 gap-4 bg-blue-200 flex flex-col items-center"
         style={{
           left: 0,
         }}
@@ -39,7 +43,7 @@ const Sidebar = () => {
 
         <div
           onClick={() => {
-            homePage();
+            myQuizzes();
           }}
           className="flex flex-col gap-1 group hover:bg-white  cursor-pointer rounded-md w-[80%] bg-blue-900 flex flex-col justify-center items-center"
         >

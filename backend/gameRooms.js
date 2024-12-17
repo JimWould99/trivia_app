@@ -40,6 +40,7 @@ module.exports = (io, socket) => {
     answers[room] = roomValues;*/
     answers[room] = [];
     socket.to(room).emit("join_game", "buffer");
+    console.log("questions", questions);
     setTimeout(() => {
       io.to(room).emit("setQuestions", questions);
     }, 0.5 * 1000);

@@ -9,6 +9,54 @@ const Home = () => {
   const { user } = useContext(AuthContext);
   const [quizzes, setQuizzes] = useState<Array>();
   const [userQuizzes, setUserQuizzes] = useState<Array>();
+  const [APIquizzes, setAPIquizzes] = useState<Array>();
+
+  const API_questions = [
+    {
+      category: null,
+      createdAt: "2024-12-09T11:27:08.582Z",
+      id: "general",
+      img_url: null,
+      name: "General knowledge Two",
+      userId: "2ec46baa-c8ff-40de-8c06-8a3299f595a2",
+    },
+    {
+      category: null,
+      createdAt: "2024-12-09T11:27:08.582Z",
+      id: "animals",
+      img_url: null,
+      name: "Animals Two",
+      userId: "2ec46baa-c8ff-40de-8c06-8a3299f595a2",
+    },
+    {
+      category: null,
+      createdAt: "2024-12-09T11:27:08.582Z",
+      id: "geography",
+      img_url: null,
+      name: "Geography",
+      userId: "2ec46baa-c8ff-40de-8c06-8a3299f595a2",
+    },
+  ];
+
+  useEffect(() => {
+    const fetchAPIquizzes = async () => {
+      const options = {
+        method: "GET",
+      };
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_URL}/questions_api`,
+        options
+      );
+      console.log("api quizzes", response);
+      const json = await response.json();
+      console.log("api quizzes", json);
+      if (response.ok) {
+        setAPIquizzes(json.general);
+      }
+    };
+    fetchAPIquizzes();
+  }, []);
+
   useEffect(() => {
     const fetchQuizzes = async () => {
       const options = {
@@ -56,6 +104,7 @@ const Home = () => {
       fetchUserQuizzes();
     }
   }, [user]);
+
   return (
     <>
       <Header></Header>
@@ -108,8 +157,8 @@ const Home = () => {
                 })}
             </div>
             <div className="p-5 bg-slate-200 grid grid-cols-2 gap-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2  rounded-md drop-shadow-xl">
-              {quizzes &&
-                quizzes.map((quiz) => {
+              {API_questions &&
+                API_questions.map((quiz) => {
                   return (
                     <Quiz_display quiz={quiz} key={quiz.id}></Quiz_display>
                   );

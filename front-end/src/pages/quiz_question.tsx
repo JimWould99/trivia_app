@@ -2,6 +2,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../components/header";
 import Quiz_finish from "./quiz_finish";
+import { v4 as uuidv4 } from "uuid";
 
 const Question_collection = () => {
   /*
@@ -24,6 +25,15 @@ logic- a timer
 
   console.log(quizId);
   useEffect(() => {
+    if (
+      quizId === "geography" ||
+      quizId === "general" ||
+      quizId === "animals" ||
+      quizId === "history" ||
+      quizId === "politics"
+    ) {
+      return;
+    }
     const fetchQuestions = async () => {
       const options = {
         method: "POST",
@@ -46,6 +56,50 @@ logic- a timer
     fetchQuestions();
 
     console.log("questions", questions);
+  }, []);
+
+  useEffect(() => {
+    if (
+      quizId !== "geography" &&
+      quizId !== "general" &&
+      quizId !== "animals" &&
+      quizId !== "politics" &&
+      quizId !== "history"
+    ) {
+      return;
+    }
+    const fetchQuizzes = async () => {
+      const options = {
+        method: "GET",
+      };
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_URL}/questions_api_${quizId}`,
+        options
+      );
+      const json = await response.json();
+      if (response.ok) {
+        let questionSet = [];
+
+        json.response.forEach((question, index) => {
+          question["answerOne"] = question.allAnswers[0];
+          question["answerTwo"] = question.allAnswers[1];
+          question["answerThree"] = question.allAnswers[2];
+          question["answerFour"] = question.allAnswers[3];
+          question.allAnswers.forEach((answer, index) => {
+            if (answer === question.correctAnswer) {
+              question["correctAnswer"] = index + 1;
+            }
+          });
+          question["quizId"] = quizId;
+          question["id"] = uuidv4();
+          question["question"] = question.value;
+          questionSet.push(question);
+        });
+
+        setQuestions(questionSet);
+      }
+    };
+    fetchQuizzes();
   }, []);
 
   useEffect(() => {

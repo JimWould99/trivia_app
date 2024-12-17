@@ -5,6 +5,7 @@ import { SocketContext } from "../context/socket";
 import Response_display from "../components/response_display.jsx";
 import Leaderboard_display from "../components/leaderboard.js";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 const Quiz_live = () => {
   const location = useLocation();
@@ -21,9 +22,17 @@ const Quiz_live = () => {
   const [displayRanking, setDisplayRanking] = useState<boolean>(false);
   const clicked = useRef(false);
   useEffect(() => {
-    if (user === "client") {
+    if (
+      user === "client" ||
+      quizId === "geography" ||
+      quizId === "general_one" ||
+      quizId === "animals" ||
+      quizId === "history" ||
+      quizId === "politics"
+    ) {
       return;
     }
+    //console.log("request for custom made");
     const fetchQuestions = async () => {
       const options = {
         method: "POST",
@@ -37,7 +46,7 @@ const Quiz_live = () => {
         options
       );
       const json = await response.json();
-      console.log("questions", json.questions);
+      //  console.log("questions", json.questions);
       // console.log(quiz.name, ":", json.questions, "quiz id", quiz.id);
       if (response.ok) {
         socket.emit("game_connection", json.questions, room);
@@ -45,8 +54,61 @@ const Quiz_live = () => {
     };
     fetchQuestions();
   }, []);
+
+  useEffect(() => {
+    if (
+      user === "client" ||
+      (quizId !== "geography" &&
+        quizId !== "general_one" &&
+        quizId !== "animals" &&
+        quizId !== "politics" &&
+        quizId !== "history")
+    ) {
+      console.log("one");
+      return;
+    }
+    console.log("request for api made");
+    const fetchQuizzes = async () => {
+      const options = {
+        method: "GET",
+      };
+      const response = await fetch(
+        `${import.meta.env.VITE_REACT_APP_URL}/questions_api_${quizId}`,
+        options
+      );
+      console.log("response", response);
+      const json = await response.json();
+      console.log("json", json);
+      if (response.ok) {
+        let questionSet = [];
+
+        json.response.forEach((question, index) => {
+          question["answerOne"] = question.allAnswers[0];
+          question["answerTwo"] = question.allAnswers[1];
+          question["answerThree"] = question.allAnswers[2];
+          question["answerFour"] = question.allAnswers[3];
+          question.allAnswers.forEach((answer, index) => {
+            if (answer === question.correctAnswer) {
+              question["correctAnswer"] = index + 1;
+            }
+          });
+          question["quizId"] = quizId;
+          question["id"] = uuidv4();
+          question["question"] = question.value;
+          questionSet.push(question);
+        });
+
+        console.log("question set", questionSet);
+
+        socket.emit("game_connection", questionSet, room);
+      }
+    };
+    fetchQuizzes();
+  }, []);
+
   useEffect(() => {
     socket.on("setQuestions", (questions: Array) => {
+      console.log("set questions", questions);
       setQuestions(questions);
     });
     socket.on("increase_index", (question) => {
@@ -75,6 +137,7 @@ const Quiz_live = () => {
       //console.log("ranking after", holder);
     };
     socket.on("feedback", (recieved_feedback: Array) => {
+      console.log("feedback received");
       setSelected(null);
       recieved_feedback.forEach((user) => {
         if (user.username === username) {
@@ -103,7 +166,7 @@ const Quiz_live = () => {
   }, [ranking]);
 
   const checkAnswer = (selectedAnswer: number, time: number) => {
-    console.log("check answer function", time);
+    console.log("check answer function; question", questions[questionIndex]);
     clicked.current = true;
     setSelected(selectedAnswer);
     let answer;

@@ -10,6 +10,10 @@ const Sidebar = () => {
   const myQuizzes = () => {
     navigate("/my_quizzes");
   };
+
+  const discoverPage = () => {
+    navigate("/discover");
+  };
   return (
     <>
       <div
@@ -69,7 +73,7 @@ const Sidebar = () => {
 
         <div
           onClick={() => {
-            homePage();
+            discoverPage();
           }}
           className="group hover:bg-white  cursor-pointer rounded-md w-[80%] bg-blue-900 flex flex-col justify-center items-center"
         >

@@ -11,6 +11,11 @@ const Home = () => {
   const [userQuizzes, setUserQuizzes] = useState<Array>();
   const [APIquizzes, setAPIquizzes] = useState<Array>();
 
+  const [quizzes_played, setQuizzesPlayed] = useState<number>();
+  const [quizzes_won, setQuizzesWon] = useState<number>();
+  const [questions_answered, setQuestionsAnswered] = useState<number>();
+  const [questions_correct, setQuestionsCorrect] = useState<number>();
+
   const API_questions = [
     {
       category: null,
@@ -39,23 +44,30 @@ const Home = () => {
   ];
 
   useEffect(() => {
-    const fetchAPIquizzes = async () => {
+    const setStats = async () => {
       const options = {
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+          "Content-Type": "application/json",
+        },
       };
       const response = await fetch(
-        `${import.meta.env.VITE_REACT_APP_URL}/questions_api`,
+        `${import.meta.env.VITE_REACT_APP_URL}/trivia_user/show_stats`,
         options
       );
-      console.log("api quizzes", response);
       const json = await response.json();
-      console.log("api quizzes", json);
       if (response.ok) {
-        setAPIquizzes(json.general);
+        setQuizzesPlayed(json.no_quiz_completed);
+        setQuizzesWon(json.no_quiz_won);
+        setQuestionsAnswered(json.questions_completed);
+        setQuestionsCorrect(json.questions_correct);
       }
     };
-    fetchAPIquizzes();
-  }, []);
+    if (user) {
+      setStats();
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -115,10 +127,10 @@ const Home = () => {
             <div className="bg-slate-200 p-5 flex flex-col  rounded-md drop-shadow-xl">
               <p className="text-xl font-bold mb-2">{user && user.email}</p>
               <div className="flex flex-col gap-1">
-                <p>Quizzes played: (number)</p>
-                <p>Quizzes won: (number) and (percent)</p>
-                <p>Questions answered: (number)</p>
-                <p>Questions correct: (number) and (percent)</p>
+                <p>Quizzes played: {quizzes_played}</p>
+                <p>Quizzes won: {quizzes_won}</p>
+                <p>Questions answered: {questions_answered}</p>
+                <p>Questions correct: {questions_correct}</p>
               </div>
             </div>
             <div className="bg-slate-200 p-5 flex flex-col rounded-md drop-shadow-xl">

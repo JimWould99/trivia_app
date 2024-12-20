@@ -3,15 +3,28 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/auth_context";
 
 const Header = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   return (
     <>
       <div className="h-20 flex justify-between items-center px-20 bg-orange-200 border-b-2 border-stone-400">
         {user ? (
-          <Link to="/">
-            <p className="text-3xl font-bold">Trivia site</p>
-          </Link>
+          <div className="flex gap-3">
+            <Link to="/">
+              <p className="text-3xl font-bold">Trivia site</p>
+            </Link>
+            <Link to="/home">
+              <button
+                onClick={() => logout()}
+                className=" text-white font-bold bg-orange-800 rounded p-2.5 hover:bg-orange-300 hover:text-black"
+                style={{
+                  boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
+                }}
+              >
+                Logout
+              </button>
+            </Link>
+          </div>
         ) : (
           <Link to="/sign_up_login">
             <button

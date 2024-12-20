@@ -54,6 +54,9 @@ const My_quizzes = () => {
                 </div>
               );
             })}
+          {userQuizzes && userQuizzes.length === 0 && (
+            <p className="text-3xl">No quizzes yet</p>
+          )}
         </div>
       </div>
     </>

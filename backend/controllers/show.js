@@ -110,3 +110,26 @@ exports.questions_api_politics = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+exports.show_user_stats = async (req, res) => {
+  const { id } = req.user;
+  console.log("id", id);
+  ///const user_id = user.id;
+  const select_user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  const {
+    no_quiz_completed,
+    no_quiz_won,
+    questions_completed,
+    questions_correct,
+  } = select_user;
+  res.json({
+    no_quiz_completed,
+    no_quiz_won,
+    questions_completed,
+    questions_correct,
+  });
+};

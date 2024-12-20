@@ -46,6 +46,10 @@ exports.add_user = async (req, res) => {
     data: {
       email,
       password: hash,
+      no_quiz_completed: 0,
+      no_quiz_won: 0,
+      questions_completed: 0,
+      questions_correct: 0,
     },
   });
   let id = new_user.id;

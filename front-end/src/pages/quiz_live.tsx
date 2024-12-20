@@ -21,6 +21,8 @@ const Quiz_live = () => {
   const [ranking, setRanking] = useState<object | null>(null);
   const [displayRanking, setDisplayRanking] = useState<boolean>(false);
   const clicked = useRef(false);
+
+  const [questionsCorrect, setQuestionsCorrect] = useState<number>(0);
   useEffect(() => {
     if (
       user === "client" ||
@@ -114,7 +116,15 @@ const Quiz_live = () => {
     socket.on("increase_index", (question) => {
       if (questionIndex + 1 === questions.length) {
         console.log("reroute");
-        navigate("/quiz_finish", { state: { ranking, quizId } });
+        navigate("/quiz_finish", {
+          state: {
+            ranking,
+            quizId,
+            questionsCorrect,
+            no_questions: questions.length,
+            username,
+          },
+        });
       }
       clicked.current = false;
       setDisplayRanking(false);
@@ -172,6 +182,7 @@ const Quiz_live = () => {
     let answer;
     if (selectedAnswer === questions[questionIndex].correctAnswer) {
       answer = true;
+      setQuestionsCorrect((prev) => prev + 1);
     } else {
       answer = false;
     }

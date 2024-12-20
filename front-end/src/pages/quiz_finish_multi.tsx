@@ -1,8 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import Header from "../components/header";
+import { AuthContext } from "../context/auth_context";
+import { useContext } from "react";
+
 const Quiz_finish_online = () => {
+  const { user } = useContext(AuthContext);
   const location = useLocation();
-  const { ranking, quizId } = location.state;
+  const { ranking, quizId, questionsCorrect, no_questions, username } =
+    location.state;
   console.log("ranking", ranking);
   const sortedUsers = [];
   for (let user in ranking) {
@@ -10,6 +15,41 @@ const Quiz_finish_online = () => {
   }
   sortedUsers.sort((a, b) => b[1] - a[1]);
 
+  console.log("user details", questionsCorrect, no_questions);
+
+  const updateUserStats = async () => {
+    if (!user) {
+      return;
+    }
+    let quizWon;
+    let no_answered;
+    let no_correct;
+    if (sortedUsers[0] === username) {
+      quizWon = 1;
+    } else {
+      quizWon = 0;
+    }
+    no_answered = no_questions;
+    no_correct = questionsCorrect;
+    const options = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ quizWon, no_answered, no_correct }),
+    };
+    const response = await fetch(
+      `${import.meta.env.VITE_REACT_APP_URL}/trivia_user/update_user`,
+      options
+    );
+    const json = await response.json();
+
+    if (response.ok) {
+      console.log("updated", json);
+    }
+  };
+  updateUserStats();
   return (
     <>
       <Header></Header>

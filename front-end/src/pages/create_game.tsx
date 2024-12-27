@@ -17,7 +17,8 @@ const Create_game = () => {
 
   const { socket } = useContext(SocketContext);
 
-  const [displayMessage, setDisplayMessage] = useState<string>("text-white");
+  const [displayMessage, setDisplayMessage] =
+    useState<string>("text-orange-200");
   const [username, setUsername] = useState<string>("");
   const [players, setPlayers] = useState<Array>();
   const [room, setRoom] = useState<number>();
@@ -66,7 +67,7 @@ const Create_game = () => {
 
   const startGame = () => {
     if (players === undefined || players.length < 2) {
-      setDisplayMessage("");
+      setDisplayMessage("color-orange-200");
       return;
     }
     navigate("/quiz_live", {
@@ -76,10 +77,9 @@ const Create_game = () => {
   return (
     <>
       <Header></Header>
-      <div className="grid grid-cols-2 ">
-        <div>
+      <div className="grid sm:grid-cols-2 ">
+        <div className="bg-orange-200 pb-8 m">
           <div className="h-10"></div>
-
           <div className="flex flex-col pl-20 gap-y-16 ">
             <div className="flex gap-10 items-center invisible">
               <div>
@@ -106,7 +106,7 @@ const Create_game = () => {
             <div>
               <button
                 onClick={() => startGame()}
-                className="w-[50%] bg-fuchsia-800 hover:bg-fuchsia-600 text-white font-bold py-1.5 px-6 rounded"
+                className="w-[50%] text-2xl bg-fuchsia-800 hover:bg-fuchsia-600 text-white font-bold py-2 px-6 rounded"
               >
                 Start Game
               </button>
@@ -117,8 +117,8 @@ const Create_game = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center bg-slate-200 h-[86vh]">
-          <div className="h-10 bg-slate-200 w-full"></div>
+        <div className="flex flex-col items-center bg-sky-200 h-[86vh]">
+          <div className="h-10 bg-sky-200 w-full"></div>
           <p className="text-2xl mb-4">Players</p>
           <div className="flex flex-wrap w-[80%] gap-10">
             {players &&

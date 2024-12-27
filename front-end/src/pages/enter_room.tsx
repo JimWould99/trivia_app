@@ -17,9 +17,9 @@ const Enter_room = () => {
   const [players, setPlayers] = useState<Array>();
   const [username, setUsername] = useState<string>("");
 
-  const [roomMessage, setRoomMessage] = useState<string>("text-white");
+  const [roomMessage, setRoomMessage] = useState<string>("text-orange-200");
 
-  const [userMessage, setUserMessage] = useState<string>("text-white");
+  const [userMessage, setUserMessage] = useState<string>("text-orange-200");
 
   useEffect(() => {
     if (user) {
@@ -31,8 +31,8 @@ const Enter_room = () => {
     if (socket) {
       socket.on("join-confirmation-joiner", (sentValue) => {
         console.log(`sent value: ${sentValue}`);
-        setRoomMessage("text-white");
-        setUserMessage("text-white");
+        setRoomMessage("text-orange-200");
+        setUserMessage("text-orange-200");
         setRoomDisplay(sentValue);
       });
 
@@ -46,7 +46,7 @@ const Enter_room = () => {
       });
 
       socket.on("room-not-found", (room) => {
-        setRoomMessage("");
+        setRoomMessage("text-black");
       });
 
       socket.on("join_game", (question) => {
@@ -69,8 +69,8 @@ const Enter_room = () => {
   return (
     <>
       <Header></Header>
-      <div className="grid grid-cols-2 ">
-        <div className="flex flex-col pl-20 gap-y-10">
+      <div className="grid sm:grid-cols-2 ">
+        <div className="pb-10 bg-orange-200 flex flex-col pl-20 gap-y-10">
           <div>
             <div className="h-10"></div>
             <p>Room number</p>
@@ -97,15 +97,15 @@ const Enter_room = () => {
             <p className={userMessage}>Please type a username</p>
           </div>
           <button
-            className="bg-blue-900 hover:bg-blue-700 text-white font-bold py-1.5 px-6 rounded w-[50%]"
+            className="text-2xl text-nowrap bg-blue-900 hover:bg-blue-700 text-white font-bold py-1.5 px-6 rounded w-[50%]"
             onClick={() => enterRoom()}
           >
             Join game
           </button>
           {roomDisplay && <p className="text-3xl">Joined room {roomDisplay}</p>}
         </div>
-        <div className="flex flex-col items-center bg-slate-200 h-[86vh]">
-          <div className="h-10 bg-slate-200 w-full"></div>
+        <div className="flex flex-col items-center bg-sky-200 h-[86vh]">
+          <div className="h-10 bg-sky-200 w-full"></div>
           <p className="text-2xl mb-4">Players</p>
           <div className="grid grid-cols-3 w-[80%] gap-10">
             {players &&

@@ -7,11 +7,11 @@ const Header = () => {
 
   return (
     <>
-      <div className="h-20 flex justify-between items-center px-20 bg-orange-200 border-b-2 border-stone-400">
+      <div className="grid py-4 sm:py-0 md:py-0 lg:py-0 gap-4 h-30 sm:h-20 md:h-20 lg:h-20 sm:flex md:flex lg:flex sm:justify-between md:justify-between lg:justify-between items-center px-4 sm:px-20 bg-blue-200 border-b-2 border-stone-400">
         {user ? (
-          <div className="flex gap-3">
+          <div className="flex gap-3 justify-between">
             <Link to="/">
-              <p className="text-3xl font-bold">Trivia site</p>
+              <p className="text-3xl font-bold text-nowrap">Trivia site</p>
             </Link>
             <Link to="/home">
               <button
@@ -38,10 +38,10 @@ const Header = () => {
           </Link>
         )}
         {user && (
-          <div className="flex gap-3">
+          <div className="flex gap-3 justify-between">
             <Link to="/join_game">
               <button
-                className="text-md text-white font-bold bg-fuchsia-800 rounded p-2.5 hover:bg-white hover:text-black"
+                className="text-nowrap text-md text-white font-bold bg-fuchsia-800 rounded p-2.5 hover:bg-white hover:text-black"
                 style={{
                   boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
                 }}
@@ -51,7 +51,7 @@ const Header = () => {
             </Link>
             <Link to="/create_quiz">
               <button
-                className="text-md text-white font-bold bg-fuchsia-800 rounded p-2.5 hover:bg-white hover:text-black"
+                className="text-nowrap text-md text-white font-bold bg-fuchsia-800 rounded p-2.5 hover:bg-white hover:text-black"
                 style={{
                   boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
                 }}
@@ -59,7 +59,7 @@ const Header = () => {
                 Create new deck
               </button>
             </Link>
-            <button className="bg-blue-900 rounded-full p-2.5 hover:bg-blue-700 ">
+            <button className=" bg-blue-900 rounded-full p-2.5 hover:bg-blue-700 ">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

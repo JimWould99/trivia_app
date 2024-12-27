@@ -69,7 +69,7 @@ const Login_page = ({ redirect, join_game }) => {
   return (
     <>
       <div className="flex justify-center">
-        <div className="w-1/2">
+        <div className="sm:w-2/3 md:w-2/3 lg:w-2/3 bg-white px-10 mt-4 sm:mt-10 md:mt-10 lg:mt-10 rounded-md shadow-md">
           <p className="mt-5 text-2xl">Login </p>
           <form
             action=""
@@ -83,7 +83,7 @@ const Login_page = ({ redirect, join_game }) => {
               onChange={(e) => setEmail(e.target.value)}
               value={email}
               id="email"
-              className="border border-black h-10 pl-4"
+              className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-none border border-black h-10 pl-4"
               placeholder="email"
             />
             <div className="flex gap-4 items-center">
@@ -93,7 +93,7 @@ const Login_page = ({ redirect, join_game }) => {
                 onChange={(e) => setPassword(e.target.value)}
                 value={password}
                 id="password"
-                className="border border-black h-10 w-full pl-4"
+                className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-none border border-black h-10 pl-4 w-full"
                 placeholder="password"
               />
               {showPass === "password" && (

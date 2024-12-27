@@ -5,7 +5,7 @@ import Header from "../components/header";
 const Account_page = () => {
   return (
     <>
-      <div className="grid grid-cols-2 h-screen">
+      <div className="grid grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 h-screen">
         <div className="bg-orange-100">
           <Login_page redirect={true}></Login_page>
         </div>

@@ -250,7 +250,7 @@ export const Quiz_Question = ({ question, checkAnswer, decision }) => {
           )}
           <div className="flex flex-col items-center justify-center">
             <button
-              className=" text-md text-black font-bold bg-green-400 rounded p-3 hover:bg-white hover:text-black"
+              className="invisible text-md text-black font-bold bg-green-400 rounded p-3 hover:bg-white hover:text-black"
               style={{
                 boxShadow: "inset 0px -4px 0px 0px rgba(0, 0, 0, 0.25)",
               }}

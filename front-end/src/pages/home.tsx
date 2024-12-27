@@ -120,11 +120,11 @@ const Home = () => {
   return (
     <>
       <Header></Header>
-      <div className="grid grid-cols-[minmax(70px,_1fr)_14fr]  ">
+      <div className="grid grid-cols-1 sm:grid-cols-[minmax(70px,_1fr)_14fr] md:grid-cols-[minmax(70px,_1fr)_14fr] lg:grid-cols-[minmax(70px,_1fr)_14fr]  ">
         <Sidebar></Sidebar>
-        <div className="grid grid-cols-[1fr_2fr]">
-          <div className="flex flex-col p-4 pt-6 gap-6">
-            <div className="bg-slate-200 p-5 flex flex-col  rounded-md drop-shadow-xl">
+        <div className="bg-orange-200 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-[1fr_2fr] lg:grid-cols-[1fr_2fr]">
+          <div className="hidden sm:hidden md:flex lg:flex flex-col p-4 pt-6 gap-6">
+            <div className="bg-sky-200 p-5 flex flex-col  rounded-md drop-shadow-xl">
               <p className="text-xl font-bold mb-2">{user && user.email}</p>
               <div className="flex flex-col gap-1">
                 <p>Quizzes played: {quizzes_played}</p>
@@ -133,12 +133,12 @@ const Home = () => {
                 <p>Questions correct: {questions_correct}</p>
               </div>
             </div>
-            <div className="bg-slate-200 p-5 flex flex-col rounded-md drop-shadow-xl">
+            <div className="bg-sky-200 p-5 flex flex-col rounded-md drop-shadow-xl">
               <p className="text-xl font-bold">My recent quizzes</p>
               {userQuizzes && userQuizzes.length === 0 && (
                 <p className="mt-5">No quizzes yet</p>
               )}
-              <div className="p-5 pl-0 bg-slate-200 grid grid-cols-1 gap-6">
+              <div className="p-5 pl-0 bg-sky-200 grid grid-cols-1 gap-6">
                 {userQuizzes &&
                   userQuizzes.map((quiz, index) => {
                     return (
@@ -158,7 +158,7 @@ const Home = () => {
             </div>
           </div>
           <div className="flex flex-col gap-6 p-6">
-            <div className="p-5 bg-slate-200 grid grid-cols-2 gap-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2  rounded-md drop-shadow-xl">
+            <div className="p-5 bg-sky-200 grid grid-cols-1 gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2  rounded-md drop-shadow-xl">
               {quizzes &&
                 quizzes.map((quiz) => {
                   return (
@@ -168,7 +168,7 @@ const Home = () => {
                   );
                 })}
             </div>
-            <div className="p-5 bg-slate-200 grid grid-cols-2 gap-6 lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2  rounded-md drop-shadow-xl">
+            <div className="p-5 bg-sky-200 grid grid-cols-1 gap-6 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2  rounded-md drop-shadow-xl">
               {API_questions &&
                 API_questions.map((quiz) => {
                   return (

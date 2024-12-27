@@ -59,7 +59,7 @@ const Sign_up_Page = ({ redirect }) => {
   return (
     <>
       <div className="flex justify-center">
-        <div className="w-1/2">
+        <div className="sm:w-2/3 md:w-2/3 lg:w-2/3 bg-white px-10 mt-4 sm:mt-10 md:mt-10 lg:mt-10 rounded-md shadow-md">
           <p className="mt-5 mb-5 text-2xl">Sign up</p>
           <form
             action=""
@@ -71,7 +71,7 @@ const Sign_up_Page = ({ redirect }) => {
               name="email"
               onChange={(e) => setEmail(e.target.value)}
               id="email"
-              className="border border-black h-10 pl-4"
+              className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-none border border-black h-10 pl-4"
               placeholder="email"
             />
             <div className="flex gap-4 items-center">
@@ -80,7 +80,7 @@ const Sign_up_Page = ({ redirect }) => {
                 name="password"
                 onChange={(e) => setPassword(e.target.value)}
                 id="password"
-                className="border border-black h-10 w-full pl-4"
+                className="rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-none border border-black h-10 pl-4 w-full "
                 placeholder="password"
               />
               {showPass === "password" && (

@@ -18,7 +18,7 @@ const Initial = () => {
           </button>
         </Link>
       </div>
-      <div className="grid grid-cols-2 h-[100vh]">
+      <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 h-[100vh]">
         <div className="bg-blue-200 h-full w-full flex justify-center items-center">
           <Link to="/account_page">
             <div className="text-4xl font-bold text-white px-16 py-4 bg-cyan-800 drop-shadow-xl rounded cursor-pointer hover:bg-cyan-300 hover:text-black">

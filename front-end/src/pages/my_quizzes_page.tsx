@@ -45,7 +45,7 @@ const My_quizzes = () => {
       <Header></Header>
       <div className="h-full grid grid-cols-[minmax(70px,_1fr)_14fr]  ">
         <Sidebar></Sidebar>
-        <div className="p-5 bg-slate-200 grid grid-cols-2 gap-6 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2  rounded-md drop-shadow-xl">
+        <div className="p-5 bg-orange-200 grid grid-cols-2 gap-6 lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2  rounded-md drop-shadow-xl">
           {userQuizzes &&
             userQuizzes.map((quiz) => {
               return (

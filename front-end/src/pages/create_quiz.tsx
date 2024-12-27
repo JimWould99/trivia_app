@@ -46,7 +46,7 @@ const Create_quiz_page = () => {
   return (
     <>
       <Header></Header>
-      <div className="h-[80vh] flex justify-center items-center">
+      <div className="bg-orange-200 h-[90vh] flex justify-center items-center">
         <div className="flex flex-col gap-12 bg-fuchsia-800 py-10 px-6 rounded-md">
           <p className="text-2xl mb-2 text-white">Quiz Name</p>
           <div>

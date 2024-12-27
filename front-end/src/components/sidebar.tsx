@@ -17,7 +17,7 @@ const Sidebar = () => {
   return (
     <>
       <div
-        className="min-h-screen sticky pt-4 gap-4 bg-blue-200 flex flex-col items-center"
+        className="hidden sm:flex md:flex lg:flex min-h-screen sticky pt-4 gap-4 bg-cyan-200  flex-col items-center"
         style={{
           left: 0,
         }}
